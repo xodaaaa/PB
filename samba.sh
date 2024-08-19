@@ -45,8 +45,11 @@ cat <<EOL > /etc/samba/smb.conf
    path = /media/Datos
 EOL
 
-# Crear un nuevo usuario
+# Crear un nuevo usuario de sistema
 adduser --disabled-password --gecos "" $username
+
+# Añadir el usuario al grupo 'sambashare'
+usermod -aG sambashare $username
 
 # Pedir al usuario la contraseña para Samba
 echo "Introduce la contraseña para el usuario de Samba '$username':"
@@ -63,8 +66,9 @@ fi
 # Configurar la contraseña del usuario de sistema
 echo "$username:$samba_password" | chpasswd
 
-# Configurar la contraseña de Samba para el usuario
+# Configurar la contraseña de Samba para el usuario y activar la cuenta
 (echo "$samba_password"; echo "$samba_password") | smbpasswd -s -a $username
+smbpasswd -e $username
 
 # Reiniciar los servicios de Samba y wsdd
 systemctl restart smbd
@@ -77,3 +81,4 @@ systemctl enable nmbd
 systemctl enable wsdd
 
 echo "Configuración completada con éxito."
+
