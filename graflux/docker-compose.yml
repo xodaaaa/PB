@@ -3,6 +3,7 @@ services:
   influxdb:
     container_name: influxdb
     image: influxdb:latest
+    restart: unless-stopped
     ports:
       - "8086:8086"
     environment:
@@ -16,6 +17,7 @@ services:
   grafana:
     container_name: grafana
     image: grafana/grafana:latest
+    restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
